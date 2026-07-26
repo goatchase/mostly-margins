@@ -9,6 +9,7 @@
     .admin-toolbar,.admin-phase>header{display:flex;justify-content:space-between;align-items:center}.admin-phase>header button{border:0;background:none;font:800 9px monospace;cursor:pointer}.admin-table-head,.admin-game-row{display:grid;grid-template-columns:1fr 26px 1fr 120px 54px 54px 70px 30px;gap:7px;align-items:center}.admin-table-head{margin-top:12px;padding:8px 0;border-top:1px solid #ddd;border-bottom:1px solid #ddd;font:700 8px monospace;color:#777}.admin-game-row{padding:8px 0;border-bottom:1px solid #eee}.admin-game-row input{width:100%;min-width:0;padding:8px;border:1px solid var(--line)}.admin-game-row .at{text-align:center;color:#888}.admin-game-row button{border:0;background:#eee;padding:8px 5px;font:700 8px monospace;cursor:pointer}.admin-game-row .remove{background:none;color:#b22;font-size:16px}.settings input[type="number"],.settings input[type="datetime-local"]{display:block;width:100%;padding:10px;margin-top:6px;border:1px solid var(--line);background:#fff}
     @media(max-width:900px){.brand small,.deadline,.path-label{display:none}.nav{margin-left:20px;gap:16px}.hero,.view-head,.layout,.page{margin-left:18px;margin-right:18px}.survival{padding:0}.phase{padding:0 8px}.phase>span,.phase small,.current{display:none}.status{width:145px}.layout{grid-template-columns:1fr}.aside{display:grid;grid-template-columns:1fr 1fr}.score-grid{grid-template-columns:1fr 1fr}.admin-grid{grid-template-columns:1fr}.admin-main{overflow-x:auto}.admin-table-head,.admin-game-row{min-width:760px}}@media(max-width:600px){.top{height:66px}.logo{width:44px;height:34px}.brand b{display:none}.nav{margin-left:12px;gap:10px}.nav button{font-size:11px}.survival{height:56px}.phase b{font-size:10px}.status{width:90px;padding:6px}.status>span,.status small,.status b{display:none}.status strong{font-size:11px}.match{grid-template-columns:1fr 1fr}.margin{grid-column:1/3;border:0;align-items:flex-end}.actions{gap:8px}.actions p{max-width:145px}.score-grid,.aside{grid-template-columns:1fr}.ad{display:none}.leader-head,.leader-row{grid-template-columns:40px 1fr 55px 55px;padding:0 9px}.leader-head{padding:11px 9px;font-size:7px}.admin-title{align-items:start;gap:10px}footer nav{display:none}}
     .user{min-width:92px;width:auto;padding:0 16px;border-radius:999px;white-space:nowrap}.logo{width:76px;height:56px}.brand small{font-size:9px;line-height:1.25;max-width:205px}.path-label{width:125px;font-size:14px}.phase b{font-size:16px}.phase small{font-size:11px}.phase>span{font-size:13px}.status{background:#dedfd9;color:#111;border-color:#c7c8c2;width:215px}.status>span,.status small{color:#666}.status b{color:#555;background:#f0f1ed;padding:4px 6px;border-radius:3px}.matrix-wrap{overflow:auto;border:1px solid var(--line);background:#fff}.pick-matrix{border-collapse:separate;border-spacing:0;min-width:100%;font-size:11px}.pick-matrix th,.pick-matrix td{height:54px;padding:8px 10px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center;white-space:nowrap}.pick-matrix thead th{position:sticky;top:0;background:#e9eae5;z-index:3;font:800 9px monospace}.pick-matrix .fixed-rank{position:sticky;left:0;min-width:55px;background:#fff;z-index:2}.pick-matrix .fixed-name{position:sticky;left:55px;min-width:145px;background:#fff;text-align:left;z-index:2}.pick-matrix .fixed-score{position:sticky;left:200px;min-width:70px;background:#fff;z-index:2}.pick-matrix .fixed-cut{position:sticky;left:270px;min-width:90px;background:#f0f1ed;z-index:2}.pick-matrix thead .fixed-rank,.pick-matrix thead .fixed-name,.pick-matrix thead .fixed-score,.pick-matrix thead .fixed-cut{background:#dfe0db;z-index:4}.game-col{min-width:125px}.pick-leading{background:#dff2e4;color:#145c2a}.pick-trailing{background:#f6dddd;color:#8b2323}.pick-neutral{background:#eeeeea;color:#666}.pick-leading.game-final{box-shadow:inset 0 0 0 2px #369557}.pick-trailing.game-final{opacity:.72}.matrix-empty{padding:36px;text-align:center;color:#777}
+    .phase-metrics{margin-left:auto;display:flex;gap:5px;flex:none}.phase-metrics em{min-width:48px;height:36px;padding:4px 8px;border-radius:999px;background:#343530;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-style:normal}.phase-metrics strong{font:800 12px monospace;line-height:1}.phase-metrics small{font:700 7px monospace!important;color:#aaa!important;line-height:1;margin-top:3px}.phase.active .phase-metrics em{background:#e5e6e1;color:#111}.phase.active .phase-metrics small{color:#666!important}
   </style>
 </head>
 <body>
@@ -47,7 +48,7 @@
     let week=1,active="EARLY",picks={},submitted=false,currentUser=null,currentProfile=null,isAdmin=false,authMode="create",weekLockAt="",loadedGameIds=[],cutPercentages={EARLY:50,MORNING:60,AFTERNOON:75},leaderboardRows=[],liveCutScore=null;
     function options(){return Array.from({length:15},(_,i)=>`<option value="${i+1}">Week ${i+1}</option>`).join("")}
     async function setWeek(v){week=+v;document.querySelectorAll("#weekSelect,#adminWeek").forEach(x=>x.value=week);document.querySelectorAll(".weekText").forEach(x=>x.textContent=`WEEK ${week} - ${x.closest("main").id==="scoresView"?"OFFICIAL RESULTS":"LIVE AFTER EARLY PHASE"}`);document.getElementById("adminTitle").textContent=`Week ${week} configuration.`;document.getElementById("weekNote").textContent=`Week ${week} is the selected week.`;renderPaths();await loadWeekConfig();if(currentUser)await loadUserPicks()}
-    function pathHTML(interactive=true){const me=leaderboardRows.find(r=>r.userId===currentUser?.uid),fromCut=me&&liveCutScore!=null?liveCutScore-me.score:null;return `<section class="survival"><div class="path-label">SURVIVAL<br>PATH</div>${phases.map((p,i)=>{const cut=p.key==="PRIMETIME"?"FINAL SURVIVORS":`BOTTOM ${cutPercentages[p.key]}% ELIMINATED`;return `<button class="phase ${active===p.key?"active":""}" ${interactive?`onclick="setPhase('${p.key}')"`:""}><span>0${i+1}</span><div><b>${p.label}</b><small>${cut}</small></div></button>${active===p.key?`<div class="status"><span>STATUS</span><div><strong>${me?`${me.score} PTS`:"NO SCORE"}</strong><b>${fromCut==null?"CUT PENDING":`${fromCut>=0?"+":""}${fromCut} FROM CUT`}</b></div><small>${me?`${me.rank}${ordinal(me.rank)} place`:"Awaiting finalized games"}${liveCutScore==null?"":" - Cut line "+liveCutScore}</small></div>`:""}`}).join("")}</section>`}
+    function pathHTML(interactive=true){const me=leaderboardRows.find(r=>r.userId===currentUser?.uid);return `<section class="survival"><div class="path-label">SURVIVAL<br>PATH</div>${phases.map((p,i)=>{const cut=p.key==="PRIMETIME"?"FINAL SURVIVORS":`BOTTOM ${cutPercentages[p.key]}% ELIMINATED`,stats=me?.phaseStats?.[p.key];return `<button class="phase ${active===p.key?"active":""}" ${interactive?`onclick="setPhase('${p.key}')"`:""}><span>0${i+1}</span><div><b>${p.label}</b><small>${cut}</small></div>${stats?`<aside class="phase-metrics"><em><strong>${stats.points}</strong><small>PTS</small></em><em><strong>${stats.pointsToCut>=0?"+":""}${stats.pointsToCut}</strong><small>TO CUT</small></em></aside>`:""}</button>`}).join("")}</section>`}
     function ordinal(n){return n%100>=11&&n%100<=13?"th":n%10===1?"st":n%10===2?"nd":n%10===3?"rd":"th"}
     function renderPaths(){document.getElementById("picksPath").innerHTML=pathHTML(true);document.getElementById("leaderPath").innerHTML=pathHTML(false)}
     function setPhase(k){active=k;submitted=false;renderPaths();renderGames()}
@@ -71,7 +72,85 @@
     function pickCellClass(pick,g){if(!pick||!Number.isFinite(Number(g.awayScore))||!Number.isFinite(Number(g.homeScore))||Number(g.awayScore)===Number(g.homeScore))return"pick-neutral";const leader=Number(g.awayScore)>Number(g.homeScore)?g.away:g.home,base=pick.team===leader?"pick-leading":"pick-trailing";return`${base}${g.status==="final"?" game-final":""}`}
     function renderPickMatrix(){const target=document.getElementById("leaders");if(!slateLocked()){target.innerHTML='<div class="matrix-empty">Picks will be revealed after the weekly lock time.</div>';return}if(!leaderboardRows.length){target.innerHTML='<div class="matrix-empty">No submitted picks or finalized scoring data yet.</div>';return}target.innerHTML=`<table class="pick-matrix"><thead><tr><th class="fixed-rank">RANK</th><th class="fixed-name">NAME</th><th class="fixed-score">SCORE</th><th class="fixed-cut">FROM CUT</th>${games.map(g=>`<th class="game-col">${teamCode(g.away)} ${g.awayScore??"-"}-${g.homeScore??"-"} ${teamCode(g.home)}</th>`).join("")}</tr></thead><tbody>${leaderboardRows.map(r=>`<tr><td class="fixed-rank">${r.rank}</td><td class="fixed-name">${r.username}</td><td class="fixed-score">${r.score}</td><td class="fixed-cut">${r.pointsFromCut==null?"PENDING":`${r.pointsFromCut>=0?"+":""}${r.pointsFromCut}`}</td>${games.map(g=>{const p=r.picks?.[String(g.id)];return`<td class="game-col ${pickCellClass(p,g)}">${p?`${teamCode(p.team)} ${p.margin}`:"-"}</td>`}).join("")}</tr>`).join("")}</tbody></table>`}
     async function loadLiveLeaderboard(){try{const snap=await getDocs(collection(db,"weeks",String(week),"leaderboard"));leaderboardRows=[];snap.forEach(item=>leaderboardRows.push({userId:item.id,...item.data()}));leaderboardRows.sort((a,b)=>a.score-b.score||a.username.localeCompare(b.username));leaderboardRows.forEach((r,i)=>r.rank=i+1);liveCutScore=leaderboardRows[0]?.cutScore??null;renderPickMatrix();renderPaths()}catch(error){console.warn("Could not load leaderboard",error);leaderboardRows=[];liveCutScore=null;document.getElementById("leaders").innerHTML=slateLocked()?"":'<div class="matrix-empty">Picks will be revealed after the weekly lock time.</div>';renderPaths()}}
-    async function recomputeLeaderboard(phaseKey=active){if(!isAdmin)return;const [gameSnap,pickSnap,userSnap]=await Promise.all([getDocs(collection(db,"weeks",String(week),"games")),getDocs(collection(db,"weeks",String(week),"picks")),getDocs(collection(db,"users"))]);const finalGames=new Map();gameSnap.forEach(item=>{const g=item.data();if(g.status==="final")finalGames.set(String(item.id),g)});const users=new Map();userSnap.forEach(item=>users.set(item.id,item.data().username||"Player"));const totals=new Map();pickSnap.forEach(item=>{const p=item.data(),g=finalGames.get(String(p.gameId)),row=totals.get(p.userId)||{userId:p.userId,username:users.get(p.userId)||"Player",score:0,picks:{}};row.picks[String(p.gameId)]={team:p.selectedWinner,margin:Number(p.predictedMargin)};if(g){const signed=g.winner===p.selectedWinner?Number(g.actualMargin):-Number(g.actualMargin);row.score+=Math.abs(Number(p.predictedMargin)-signed)}totals.set(p.userId,row)});const rows=[...totals.values()].sort((a,b)=>a.score-b.score||a.username.localeCompare(b.username)),pct=Number(cutPercentages[phaseKey]||0),keep=Math.max(1,Math.ceil(rows.length*(1-pct/100))),cutScore=rows.length?rows[Math.min(keep-1,rows.length-1)].score:null,batch=writeBatch(db);rows.forEach((r,i)=>batch.set(doc(db,"weeks",String(week),"leaderboard",r.userId),{username:r.username,score:r.score,picks:r.picks,rank:i+1,cutScore,pointsFromCut:cutScore==null?null:cutScore-r.score,eliminated:cutScore==null?false:r.score>cutScore,phase:phaseKey,updatedAt:serverTimestamp()}));await batch.commit();await loadLiveLeaderboard()}
+    async function recomputeLeaderboard(phaseKey=active){
+      if(!isAdmin)return;
+      const [gameSnap,pickSnap,userSnap]=await Promise.all([
+        getDocs(collection(db,"weeks",String(week),"games")),
+        getDocs(collection(db,"weeks",String(week),"picks")),
+        getDocs(collection(db,"users"))
+      ]);
+      const finalGames=new Map(),users=new Map(),totals=new Map();
+      gameSnap.forEach(item=>{
+        const game=item.data();
+        if(game.status==="final")finalGames.set(String(item.id),game);
+      });
+      userSnap.forEach(item=>users.set(item.id,item.data().username||"Player"));
+      pickSnap.forEach(item=>{
+        const pick=item.data(),game=finalGames.get(String(pick.gameId));
+        const row=totals.get(pick.userId)||{
+          userId:pick.userId,
+          username:users.get(pick.userId)||"Player",
+          score:0,
+          picks:{},
+          phaseScores:{EARLY:0,MORNING:0,AFTERNOON:0,PRIMETIME:0}
+        };
+        row.picks[String(pick.gameId)]={
+          team:pick.selectedWinner,
+          margin:Number(pick.predictedMargin)
+        };
+        if(game){
+          const signed=game.winner===pick.selectedWinner
+            ? Number(game.actualMargin)
+            : -Number(game.actualMargin);
+          const error=Math.abs(Number(pick.predictedMargin)-signed);
+          row.score+=error;
+          row.phaseScores[game.phase]=(row.phaseScores[game.phase]||0)+error;
+        }
+        totals.set(pick.userId,row);
+      });
+      const rows=[...totals.values()];
+      const visibleIndex=Math.max(0,phases.findIndex(p=>p.key===phaseKey));
+      const phaseCuts={};
+      phases.forEach((phase,index)=>{
+        if(index>visibleIndex)return;
+        const values=rows.map(row=>{
+          const points=phases.slice(0,index+1).reduce(
+            (sum,p)=>sum+(row.phaseScores[p.key]||0),0
+          );
+          return {row,points};
+        }).sort((a,b)=>a.points-b.points||a.row.username.localeCompare(b.row.username));
+        const percent=Number(cutPercentages[phase.key]||0);
+        const keep=Math.max(1,Math.ceil(values.length*(1-percent/100)));
+        const cut=values.length?values[Math.min(keep-1,values.length-1)].points:null;
+        phaseCuts[phase.key]=cut;
+        values.forEach(({row,points})=>{
+          row.phaseStats=row.phaseStats||{};
+          row.phaseStats[phase.key]={
+            points,
+            pointsToCut:cut==null?0:cut-points
+          };
+        });
+      });
+      rows.sort((a,b)=>a.score-b.score||a.username.localeCompare(b.username));
+      const cutScore=phaseCuts[phaseKey]??null,batch=writeBatch(db);
+      rows.forEach((row,index)=>batch.set(
+        doc(db,"weeks",String(week),"leaderboard",row.userId),
+        {
+          username:row.username,
+          score:row.score,
+          picks:row.picks,
+          phaseStats:row.phaseStats||{},
+          rank:index+1,
+          cutScore,
+          pointsFromCut:cutScore==null?null:cutScore-row.score,
+          eliminated:cutScore==null?false:row.score>cutScore,
+          phase:phaseKey,
+          updatedAt:serverTimestamp()
+        }
+      ));
+      await batch.commit();
+      await loadLiveLeaderboard();
+    }
     async function saveActualScore(gameId){if(!isAdmin){alert("Admin access required.");return}const away=Number(document.getElementById(`awayScore${gameId}`).value),home=Number(document.getElementById(`homeScore${gameId}`).value);if(!Number.isInteger(away)||!Number.isInteger(home)||away<0||home<0){alert("Enter valid scores.");return}const game=games.find(g=>g.id===gameId),winner=away>home?game.away:home>away?game.home:"tie";try{await setDoc(doc(db,"weeks",String(week),"games",String(gameId)),{phase:game.phase,awayTeam:game.away,homeTeam:game.home,awayScore:away,homeScore:home,winner,actualMargin:Math.abs(away-home),status:"final",updatedAt:serverTimestamp()},{merge:true});await loadWeekConfig();await recomputeLeaderboard(game.phase);alert("Final score saved and leaderboard recalculated.")}catch(error){alert(friendlyError(error))}}
     function localDateTimeValue(value){if(!value)return"";const d=value?.toDate?value.toDate():new Date(value);if(Number.isNaN(d.getTime()))return"";const offset=d.getTimezoneOffset()*60000;return new Date(d.getTime()-offset).toISOString().slice(0,16)}
     async function loadWeekConfig(){try{const weekSnap=await getDoc(doc(db,"weeks",String(week)));weekLockAt="";if(weekSnap.exists()){const data=weekSnap.data();document.getElementById("adminStatus").value=data.status||"draft";document.getElementById("adminSeason").value=data.season||2026;document.getElementById("adminCurrent").checked=data.isCurrent===true;cutPercentages={...cutPercentages,...(data.cutPercentages||{})};document.getElementById("cutEarly").value=cutPercentages.EARLY;document.getElementById("cutMorning").value=cutPercentages.MORNING;document.getElementById("cutAfternoon").value=cutPercentages.AFTERNOON;weekLockAt=localDateTimeValue(data.lockAt);document.getElementById("adminLockAt").value=weekLockAt}const gameSnap=await getDocs(collection(db,"weeks",String(week),"games"));loadedGameIds=gameSnap.docs.map(x=>Number(x.id));if(!gameSnap.empty){games=[];gameSnap.forEach(item=>{const g=item.data();games.push({id:Number(item.id),phase:g.phase||"EARLY",time:g.time||"",away:g.awayTeam||"",home:g.homeTeam||"",awayScore:g.awayScore,homeScore:g.homeScore,winner:g.winner,actualMargin:g.actualMargin,status:g.status||"scheduled",lockAt:weekLockAt||localDateTimeValue(g.lockAt)})});games.sort((a,b)=>a.id-b.id)}else{games=defaultGames.map(g=>({...g,lockAt:weekLockAt}))}}catch(error){console.warn("Could not load week configuration",error);games=defaultGames.map(g=>({...g}));loadedGameIds=[]}renderAdmin();renderGames();renderLiveScores();updateLockCountdown();await loadLiveLeaderboard()}
