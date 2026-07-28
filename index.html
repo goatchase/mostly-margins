@@ -261,6 +261,29 @@
       .game-banner-inner{padding-left:0;padding-right:0}
       .game-score-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
     }
+    /* Preserve component proportions as the viewport changes. */
+    .top{padding-left:max(10px,calc((100vw - 1280px)/2));padding-right:max(10px,calc((100vw - 1280px)/2))}
+    .brand{flex:none;min-width:118px}
+    .logo{width:118px;height:68px;max-width:none;object-fit:contain;object-position:left center;flex:none}
+    .layout{grid-template-columns:minmax(0,1fr) 300px}
+    .score-phase-games{align-items:start}
+    .game-score{width:100%;height:auto;max-height:44px;aspect-ratio:2.45/1}
+    #picksView .game-time,#picksView .team,#picksView .margin{min-width:0}
+    @media(min-width:761px) and (max-width:1050px){
+      .top>.nav{position:static;transform:none;margin-left:auto}
+      .top>.user{margin-left:24px}
+    }
+    @media(max-width:900px){
+      .layout{grid-template-columns:minmax(0,1fr)}
+    }
+    @media(max-width:760px){
+      .brand{min-width:88px}
+      .logo{width:88px;height:52px}
+      .top>.nav{position:static;transform:none;margin-left:auto}
+      .top>.user{margin-left:10px}
+      .survival-shell .phase{height:auto!important;min-height:44px;max-height:50px;aspect-ratio:1.65/1}
+      .game-score{max-height:none}
+    }
   </style>
 </head>
 <body>
