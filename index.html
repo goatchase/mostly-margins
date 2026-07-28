@@ -251,11 +251,19 @@
       .game-score-teams{padding-left:3px}.game-score-points{padding-right:2px}
       .week-row{margin-bottom:8px}.phase-instruction{font-size:8px!important}.deadline-card{margin-bottom:12px;padding:12px}.deadline-card b{font-size:15px}.leader-controls{align-items:flex-start;flex-direction:column;gap:6px}
       .top>.nav button.on:after{left:20%;right:20%;bottom:1px}
-      #picksView .match{grid-template-columns:68px minmax(0,1fr);gap:5px}
+      #picksView .match{grid-template-columns:54px minmax(0,1fr) 86px;grid-template-rows:repeat(2,minmax(0,1fr));gap:4px}
       #picksView .game-time{grid-column:1;grid-row:1/3;padding:4px}
       #picksView .game-time span{font-size:8px}
       #picksView .game-time strong{font-size:10px}
-      #picksView .team{grid-column:2}.margin{grid-column:1/-1!important}
+      #picksView .team{grid-column:2;width:100%;height:auto;min-height:46px;gap:5px;padding:5px}
+      #picksView .team .badge{width:28px;height:28px;font-size:7px}
+      #picksView .team b{font-size:10px}
+      #picksView .team em{font-size:7px}
+      #picksView .team .check{width:17px;height:17px;flex:none}
+      #picksView .margin{grid-column:3!important;grid-row:1/3;height:auto;min-height:0;padding:5px;align-items:center;border:1px solid var(--line)}
+      #picksView .margin label{margin:0 0 5px;font-size:7px}
+      #picksView .margin button{width:22px;height:29px}
+      #picksView .margin input{width:28px;height:29px}
     }
     @media(min-width:761px) and (max-width:1050px){
       .game-banner-inner{padding-left:0;padding-right:0}
@@ -263,8 +271,8 @@
     }
     /* Preserve component proportions as the viewport changes. */
     .top{padding-left:max(10px,calc((100vw - 1280px)/2));padding-right:max(10px,calc((100vw - 1280px)/2))}
-    .brand{flex:none;min-width:118px}
-    .logo{width:118px;height:68px;max-width:none;object-fit:contain;object-position:left center;flex:none}
+    .brand{flex:none;min-width:136px}
+    .logo{width:136px;height:66px;max-width:none;object-fit:cover;object-position:center;flex:none}
     .layout{grid-template-columns:minmax(0,1fr) 300px}
     .score-phase-games{align-items:start}
     .game-score{width:100%;height:auto;max-height:44px;aspect-ratio:2.45/1}
@@ -277,8 +285,8 @@
       .layout{grid-template-columns:minmax(0,1fr)}
     }
     @media(max-width:760px){
-      .brand{min-width:88px}
-      .logo{width:88px;height:52px}
+      .brand{min-width:100px}
+      .logo{width:100px;height:48px}
       .top>.nav{position:static;transform:none;margin-left:auto}
       .top>.user{margin-left:10px}
       .survival-shell .phase{height:auto!important;min-height:44px;max-height:50px;aspect-ratio:1.65/1}
@@ -430,7 +438,7 @@
 </head>
 <body>
   <header class="top">
-    <button class="brand" onclick="showView('picks')"><img class="logo" src="./picklepaper.png" alt="Pickle Paper"><b>MOSTLY<br>MARGINS</b><small>PRESENTED BY THE BRANDON WALKER COLLEGE FOOTBALL SHOW</small></button>
+    <button class="brand" onclick="showView('picks')"><img class="logo" src="./picklepaper.PNG?v=20260728" alt="Pickle Paper"><b>MOSTLY<br>MARGINS</b><small>PRESENTED BY THE BRANDON WALKER COLLEGE FOOTBALL SHOW</small></button>
     <nav class="nav"><button data-view="picks" class="on" onclick="showView('picks')">Picks</button><button data-view="leaderboard" onclick="showView('leaderboard')">Leaderboard</button><button id="adminNav" data-view="admin" class="hidden" onclick="showView('admin')">Admin</button></nav>
     <button id="userButton" class="user" onclick="accountAction()">SIGN IN</button>
   </header>
@@ -479,7 +487,7 @@
     function livePhaseStats(row,phaseKey){if(!row||!phaseIsFinal(phaseKey))return null;const ranked=leaderboardRows.map(r=>phasePointsFor(r,phaseKey)).sort((a,b)=>a-b),percent=Number(cutPercentages[phaseKey]||20),keep=Math.max(1,Math.ceil(ranked.length*(percent/100))),cut=ranked.length?ranked[Math.min(keep-1,ranked.length-1)]:0,points=phasePointsFor(row,phaseKey);return{points,pointsToCut:points-cut}}
     function survivalCutColorClass(value){return value<=-10?"cut-positive":value<=0?"cut-close":value<=10?"cut-orange":"cut-negative"}
     function playersRemainingLabel(phaseKey){const total=leaderboardRows.length;if(!total)return"NO PLAYERS YET";if(!phaseIsFinal(phaseKey))return`${total} PLAYERS ENTERED`;if(phaseKey==="PRIMETIME")return`${total} PLAYERS REMAIN`;const scores=leaderboardRows.map(r=>phasePointsFor(r,phaseKey)).sort((a,b)=>a-b),percent=Number(cutPercentages[phaseKey]||20),keep=Math.max(1,Math.ceil(total*(percent/100))),cut=scores[Math.min(keep-1,scores.length-1)],remaining=scores.filter(score=>score<=cut).length;return`${remaining} PLAYER${remaining===1?"":"S"} REMAIN`}
-    function phaseProgressData(phaseKey,me){const index=phases.findIndex(p=>p.key===phaseKey),previous=index>0?phases[index-1].key:null,scored=phaseIsFinal(phaseKey);let field=scored?leaderboardRows.filter(row=>row.phaseStats?.[phaseKey]):previous?leaderboardRows.filter(row=>row.phaseStats?.[previous]?.pointsToCut<=0):leaderboardRows.slice();if(!field.length)field=leaderboardRows.slice();field.sort((a,b)=>{const aPoints=scored?a.phaseStats?.[phaseKey]?.points??Infinity:phasePointsFor(a,phaseKey),bPoints=scored?b.phaseStats?.[phaseKey]?.points??Infinity:phasePointsFor(b,phaseKey);return aPoints-bPoints||a.username.localeCompare(b.username)});if(!field.length)return{total:10,advance:2,rank:4,advanceWidth:20,rankPosition:66.67,demo:true};const total=field.length,advance=phaseKey==="PRIMETIME"?Math.min(1,total):Math.max(1,Math.ceil(total*(Number(cutPercentages[phaseKey]||20)/100))),rankIndex=field.findIndex(row=>row.userId===me?.userId),rank=rankIndex<0?null:rankIndex+1;return{total,advance,rank,advanceWidth:Math.min(100,advance/total*100),rankPosition:total>1&&rank?Math.min(100,Math.max(0,100-(rank-1)/(total-1)*100)):100,demo:false}}
+    function phaseProgressData(phaseKey,me){const index=phases.findIndex(p=>p.key===phaseKey),previous=index>0?phases[index-1].key:null,scored=phaseIsFinal(phaseKey);let field=scored?leaderboardRows.filter(row=>row.phaseStats?.[phaseKey]):previous?leaderboardRows.filter(row=>row.phaseStats?.[previous]?.pointsToCut<=0):leaderboardRows.slice();if(!field.length)field=leaderboardRows.slice();field.sort((a,b)=>{const aPoints=scored?a.phaseStats?.[phaseKey]?.points??Infinity:phasePointsFor(a,phaseKey),bPoints=scored?b.phaseStats?.[phaseKey]?.points??Infinity:phasePointsFor(b,phaseKey);return aPoints-bPoints||a.username.localeCompare(b.username)});if(!field.length)return{total:0,advance:0,rank:null,advanceWidth:0,rankPosition:100,demo:false};const total=field.length,advance=phaseKey==="PRIMETIME"?Math.min(1,total):Math.max(1,Math.ceil(total*(Number(cutPercentages[phaseKey]||20)/100))),rankIndex=field.findIndex(row=>row.userId===me?.userId),rank=rankIndex<0?null:rankIndex+1;return{total,advance,rank,advanceWidth:Math.min(100,advance/total*100),rankPosition:total>1&&rank?Math.min(100,Math.max(0,100-(rank-1)/(total-1)*100)):100,demo:false}}
     function roundCutHTML(value,visible=true){if(!visible)return"";const known=value!==null&&value!==undefined&&Number.isFinite(Number(value)),numeric=known?Number(value):null,state=!known?"cut-pending":numeric<=0?"cut-good":"cut-bad",label=known?`${numeric>0?"+":""}${numeric}`:"—";return`<em class="round-cut ${state}" title="${known?`${label} points to the cut`:"Cut status pending"}"><strong>${label}</strong></em>`}
     function phaseNameHTML(label){const shortLabel=String(label).replace(/^Saturday\b/,"Sat.");return`<span class="phase-label-full">${label}</span><span class="phase-label-short">${shortLabel}</span>`}
     function pathPhaseNameHTML(label){return phaseNameHTML(String(label).replace(/^Saturday\s+/,""))}
