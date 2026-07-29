@@ -182,7 +182,7 @@
     .survival-shell .phase.current-phase .round-cut.cut-bad{box-shadow:none}
     .cut-marker:after,.rank-marker:after{content:none!important;display:none!important}
     .game-banner{width:100%;margin-top:28px;background:#dedfd9;border-top:4px solid #174A7E}
-    .game-banner-inner{width:calc(100% - 12px);max-width:none;margin:auto;padding:12px 0 18px}
+    .game-banner-inner{width:min(1280px,calc(100% - 32px));max-width:1280px;margin-left:auto;margin-right:auto;padding:12px 0 18px}
     .game-banner-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
     .game-banner-head strong{font:800 11px monospace;letter-spacing:.7px}
     .game-banner-head span{font:700 8px monospace;color:#686a65}
@@ -246,7 +246,7 @@
       .example-path .path-label{width:auto}
       .example-path .survival-progress{padding:7px 12px 11px}
       .game-banner{margin-top:18px}
-      .game-banner-inner{width:calc(100% - 8px);padding:10px 0 14px}
+      .game-banner-inner{width:calc(100% - 24px);max-width:none;padding:10px 0 14px}
       .game-score-grid{grid-template-columns:repeat(2,minmax(0,1fr));overflow:visible;padding-bottom:0;gap:5px}
       .score-phase-games{grid-template-columns:repeat(3,minmax(0,1fr));gap:1px}.score-phase-group>header{font-size:7px}
       .game-score{grid-template-columns:1.5fr 1fr 1fr;column-gap:0;font-size:7px}
